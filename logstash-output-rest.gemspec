@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name = 'logstash-output-example'
+  s.name = 'logstash-output-rest'
   s.version         = "0.0.1"
   s.licenses = ["Apache License (2.0)"]
   s.summary = "This plugin for output to rest service."
