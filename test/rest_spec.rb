@@ -6,7 +6,7 @@ require 'logstash/event'
 require 'logstash/plugin'
 
 #describe LogStash::Outputs::Rest do
-describe 'outputs/rest' do
+describe LogStash::Outputs::Rest do
 
   context 'registration' do
     it 'should register' do
@@ -16,19 +16,12 @@ describe 'outputs/rest' do
   end
 
   context 'receive' do
-    let(:sample_event) { LogStash::Event.new }
-    let(:output) { LogStash::Outputs::Rest.new }
-
-    before do
-      output.register
-    end
-
-    describe 'receive message' do
-      subject { output.receive(sample_event) }
-
-      it 'returns a string' do
-        expect(subject).to eq('Event received')
-      end
+    output = LogStash::Plugin.lookup('output', 'rest').new
+    data = {'message' => 'hello', '@version' => '1', '@timestamp' => '2015-06-03T23:34:54.076Z', 'host' => 'vagrant-ubuntu-trusty-64'}
+    event = LogStash::Event.new data
+    it 'returns a string' do
+      result = output.receive(event)
+      expect(result).to eq('Event received')
     end
   end
 
