@@ -1,6 +1,10 @@
-*.gem
-*.komodoproject
-Gemfile.lock
-Gemfile.bak
-.bundle
-vendor
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.log
