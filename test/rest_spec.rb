@@ -17,7 +17,8 @@ describe LogStash::Outputs::Rest do
 
   context 'receive' do
     output = LogStash::Plugin.lookup('output', 'rest').new
-    data = {'message' => 'hello', '@version' => '1', '@timestamp' => '2015-06-03T23:34:54.076Z', 'host' => 'vagrant-ubuntu-trusty-64'}
+
+    data = {'message' => 'hello', '@version' => '1', '@timestamp' => '2015-06-03T23:34:54.076Z', 'host' => 'x-ubuntu-trusty-64'}
     event = LogStash::Event.new data
     it 'returns a string' do
       result = output.receive(event)

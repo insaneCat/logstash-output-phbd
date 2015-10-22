@@ -4,28 +4,37 @@ require 'logstash/environment'
 require 'rest_client'
 
 
+# noinspection RubyResolve
 class LogStash::Outputs::Rest < LogStash::Outputs::Base
   config_name 'rest'
 
-  config :destination_proto, :validate => %w(http https), :required => true, :default => 'http'
-
-  #     `"127.0.0.1"`
-  config :destination_host, :validate => :string, :required => true, :default => '127.0.0.1'
-
-  def initialize
-  end
+  config :destination_service_protocol, :validate => %w(http https), :required => false, :default => 'http'
+  config :destination_service_host, :validate => :string, :required => true, :default => '127.0.0.1'
+  config :destination_service_port, :validate => :number, :required => false, :default => 80
+  config :destination_service_path, :validate => :string, :required => false, :default => nil
 
   public
   def register
-    @xxx = @destination_proto
   end
 
-# def register
+  # def register
 
   public
   def receive(event)
+    timestamp = event['@timestamp'].to_i
+
     #response = RestClient.post @destination_proto, {'x' => 1}.to_json, :content_type => :json, :accept => :json
-    ss = "#{@destination_proto}://#{@destination_host}:#{@destination_port}";
-    return ss
-  end # def event
-end # class LogStash::Outputs::Rest
+
+    return @uri
+  end
+
+  private
+  def build_url
+    if @destination_service_path.nil?
+      return "#{@destination_service_protocol}://#{@destination_service_host}:#{@destination_service_port}"
+    else
+      return "#{@destination_service_protocol}://#{@destination_service_host}:#{@destination_service_port}/#{@destination_service_path}"
+    end
+  end
+
+end
