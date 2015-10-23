@@ -2,7 +2,6 @@ require 'logstash/outputs/base'
 require 'logstash/namespace'
 require 'rest_client'
 
-
 # noinspection RubyResolve
 class LogStash::Outputs::Phbd < LogStash::Outputs::Base
   config_name 'phbd'
@@ -65,5 +64,6 @@ format of phbd event:
   }
 }
 =end
+    return nil
   end
 end
