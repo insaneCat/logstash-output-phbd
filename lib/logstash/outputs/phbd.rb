@@ -1,6 +1,7 @@
 require 'logstash/outputs/base'
 require 'logstash/namespace'
 require 'rest_client'
+require 'json'
 
 # noinspection RubyResolve
 class LogStash::Outputs::Phbd < LogStash::Outputs::Base
@@ -11,7 +12,7 @@ class LogStash::Outputs::Phbd < LogStash::Outputs::Base
   config :destination_service_port, :validate => :number, :required => false, :default => 8444
   config :destination_service_path, :validate => :string, :required => false, :default => 'iu/index'
 
-  config :index_name, :validate => :string, :required => true
+  config :index_name, :validate => :string, :required => false, :default => 'default'
   config :meta, :validate => :hash, :required => false
   config :source_type, :validate => :string, :required => false, :default => 'none'
 
@@ -22,8 +23,6 @@ class LogStash::Outputs::Phbd < LogStash::Outputs::Base
 
   public
   def receive(event)
-    timestamp = event['@timestamp'].to_i
-
     event_phbd = map_event_to_phbd_event(event)
 
     #response = RestClient.post @destination_proto, {'x' => 1}.to_json, :content_type => :json, :accept => :json
@@ -47,7 +46,7 @@ class LogStash::Outputs::Phbd < LogStash::Outputs::Base
     return @destination_url
   end
 
-  private
+  public
   def map_event_to_phbd_event(event)
 =begin
 format of phbd event:
@@ -64,6 +63,13 @@ format of phbd event:
   }
 }
 =end
-    return nil
+    event_phbd = Hash::new
+    event_phbd[:indexName] = @index_name
+    event_phbd[:sourceType] = @source_type
+    event_phbd[:timestamp] = event['@timestamp'].to_i
+
+
+    return JSON.generate(event_phbd)
   end
+
 end
