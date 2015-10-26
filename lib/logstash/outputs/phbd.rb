@@ -25,9 +25,9 @@ class LogStash::Outputs::Phbd < LogStash::Outputs::Base
   def receive(event)
     event_phbd = map_event_to_phbd_event(event)
 
-    #response = RestClient.post @destination_proto, {'x' => 1}.to_json, :content_type => :json, :accept => :json
+    response = RestClient.post @destination_proto, event_phbd, :content_type => :json, :accept => :json
 
-    return @destination_url
+    return response
   end
 
   private
@@ -67,6 +67,8 @@ format of phbd event:
     event_phbd[:indexName] = @index_name
     event_phbd[:sourceType] = @source_type
     event_phbd[:timestamp] = event['@timestamp'].to_i
+    event_phbd[:body] =  event.sprintf('%{host}')
+    event_phbd[:message] =  event.sprintf('%{message}')
 
 
     return JSON.generate(event_phbd)
